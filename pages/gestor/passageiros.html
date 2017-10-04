@@ -1,0 +1,45 @@
+<main>
+    <div class="row">
+        <div class="card">                            
+            <div class="card-content">                
+                <span class="card-title center">Gerenciamento de Passageiros</span>         
+
+                <div class="row">
+                    <div class="col">
+                        <a data-target="modalNovoPassageiro" class="s1 btn-floating btn-small waves-effect waves-light green tooltipped" data-position="bottom" data-delay="50" data-tooltip="Novo Passageiro"><i class="material-icons">add</i></a>
+                    </div>    
+                    <div class="col">                    
+                        <a data-target="modalVisualizacaoPassageiro" ng-disabled="selecionado" class="s1 btn-floating btn-small waves-effect waves-light yellow tooltipped" data-position="bottom" data-delay="50" data-tooltip="Detalhes do Passageiro"><i class="material-icons">search</i></a>
+                    </div>    
+                    <div class="col">
+                        <a data-target="modalEditarPassageiro" ng-disabled="selecionado" class="s1 btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="bottom" data-delay="50" data-tooltip="Editar Passageiro"><i class="material-icons">edit</i></a>
+                    </div>    
+                    <div class="col">
+                        <a ng-disabled="selecionado" data-target="modalConfirmacaoExclusaoDePassageiro" class="s1 btn-floating btn-small waves-effect waves-light red tooltipped" data-position="bottom" data-delay="50" data-tooltip="Inativar Passageiro"><i class="material-icons">delete</i></a>
+                    </div>
+                    <div class="col">
+                        <a ng-hide="passageiroSelecionadoInativo" data-target="modalConfirmacaoAtivacaoDePassageiro" class="s1 btn-floating btn-small waves-effect waves-light orange tooltipped" data-position="bottom" data-delay="50" data-tooltip="Ativar Passageiro"><i class="material-icons">check_box</i></a>
+                    </div>        
+                    <div class="col m9">
+                        <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="Qual o passageiro que você está buscando?"></input>
+                    </div>                
+                </div>         
+
+                <table class="highlight responsive-table">
+                    <thead>
+                        <tr>                                        
+                            <th>Nome</th>                            
+                            <th><a href="" ng-click="alternaStatusDasEntidades()">Status</a></th> 
+                        </tr>
+                    </thead>        
+                    <tbody>
+                        <tr ng-click="selecionaPassageiro(passageiro)" ng-repeat="passageiro in Passageiros| filter:{nome:criterioDeBusca} | filter:{statusDoCadastro:statusDasEntidades}:true" ng-hide="Passageiro === null">
+                            <td ng-style="{'background-color': passageiro.selecionado}">{{passageiro.nome + ' ' + passageiro.sobreNome}}</td>
+                            <td ng-style="{'background-color': passageiro.selecionado}">{{passageiro.statusDoCadastro}}</td>
+                        </tr>          
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</main>

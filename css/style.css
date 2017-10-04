@@ -1,0 +1,58 @@
+html, body {
+	height:80%;
+	padding-bottom: 100 !important;
+}
+main {
+	margin-top: 10px !important;
+	margin-left: 10px !important;
+	margin-right: 10px !important;	
+}
+
+nav {
+	background-color: #4db6ac !important;
+}
+
+a {
+	color: #2086a3 !important;
+}
+
+.a-white {
+	color: #fff !important;
+}
+
+.a-grey {
+	color: grey !important;
+}
+
+.print {
+	color: black !important;
+}
+
+.teal.lighten-2 {
+	background-color: #2086a3 !important;
+}
+
+.card-avisos {
+	background-color: #2086a3  !important;
+}
+
+.selecionado{
+	background-color: grey;
+}
+
+td{
+	border-radius: 0px !important;
+}
+
+.tabs .indicator {
+    background-color: #4db6ac;
+}
+
+.subsecao{
+	color: #4db6ac;
+}
+
+/*Mantém a tabela vazia no formato certo*/
+table.responsive-table{
+	display: inline-table;
+}
