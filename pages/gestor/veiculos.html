@@ -12,7 +12,7 @@
                         <a data-target="modalVisualizacaoVeiculo" ng-disabled="selecionado" class="s1 btn-floating btn-small waves-effect waves-light yellow tooltipped" data-position="bottom" data-delay="50" data-tooltip="Detalhes do Veiculo"><i class="material-icons">search</i></a>
                     </div>    
                     <div class="col">
-                        <a data-target="modalEditarVeiculo" ng-disabled="selecionado" class="s1 btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="bottom" data-delay="50" data-tooltip="Editar Veiculo"><i class="material-icons">edit</i></a>
+                        <a data-target="modalEditarVeiculo" ng-click="prepararEdicao()" ng-disabled="selecionado" class="s1 btn-floating btn-small waves-effect waves-light blue tooltipped" data-position="bottom" data-delay="50" data-tooltip="Editar Veiculo"><i class="material-icons">edit</i></a>
                     </div>    
                     <div class="col">
                         <a ng-disabled="selecionado" data-target="modalConfirmacaoExclusaoDeVeiculo" class="s1 btn-floating btn-small waves-effect waves-light red tooltipped" data-position="bottom" data-delay="50" data-tooltip="Inativar Veiculo"><i class="material-icons">delete</i></a>
@@ -36,7 +36,7 @@
                     <tbody>
                         <tr ng-click="selecionaVeiculo(veiculo)" ng-repeat="veiculo in veiculos| filter:{descricao:criterioDeBusca} | filter:{statusDoCadastro:statusDasEntidades}:true" ng-hide="veiculo === null">
                             <td ng-style="{'background-color': veiculo.selecionado}">{{veiculo.descricao}}</td>
-                            <td ng-style="{'background-color': veiculo.selecionado}">{{veiculo.placa}}</td>
+                            <td ng-style="{'background-color': veiculo.selecionado}">{{veiculo.placa | placaFilter}}</td>
                             <td ng-style="{'background-color': veiculo.selecionado}">{{veiculo.statusDoCadastro}}</td>
                         </tr>          
                     </tbody>
@@ -49,7 +49,7 @@
 
 <!-- CADASTRO DE VEICULO -->
 <div id="modalNovoVeiculo" class="modal modal-fixed-footer modal-veiculo">
-    <form ng-submit="prepararSalvamentoVeiculo(veiculo)">
+    <form ng-submit="salvarVeiculo(veiculo)">
         <div class="modal-content">
             <nav class="center">
                 <h5 class="brand-logo center">Novo Veiculo</h5>
@@ -61,7 +61,7 @@
                         <label for="descricao">Descrição</label>
                     </div>                              
                     <div class="input-field col s6">
-                        <input id="placa" type="text" class="validate" ng-model="veiculo.placa"  required maxlength="25"></input>
+                        <input id="placa" type="text" class="validate" ng-model="veiculo.placa"  required maxlength="25" ui-placa></input>
                         <label for="placa">Placa</label>
                     </div>
                     <div class="input-field col s6">
@@ -69,16 +69,16 @@
                         <label for="qtdeAssentos">Quantidade de Assentos</label>
                     </div>                                                      
                     <div class="input-field col s6">
-                        <select id="estado" ng-model="veiculo.estado" class="validate"  required>
+                        <select id="estado" class="validate"  required>
                             <option value="" disabled="" selected="">Selecione um estado</option>
                             <option ng-repeat="estado in estados" value="{{estado}}">{{estado.uf}}</option>
                         </select>
                         <label for="estado">Estado</label>                                        
-                    </div>                      
+                    </div>                               
                     <div class="input-field col s6">
-                        <select id="cidade" ng-model="veiculo.cidade" class="validate"  required>
+                        <select id="cidade" class="validate"  required>
                             <option value="" disabled="" selected="">Selecione uma cidade</option>
-                            <option ng-repeat="cidade in cidades" value="{{cidade}}">{{cidade.nome}}</option>
+                            <option ng-hide="veiculo.estado.id != cidade.idestado" ng-repeat="cidade in cidades" value="{{cidade}}">{{cidade.nome}}</option>
                         </select>
                         <label for="cidade">Cidade</label>                                        
                     </div>                      
@@ -92,422 +92,121 @@
     </form>
 </div>
 
-<!-- VISUALIZAR DETALHES DO ALUNO -->
-<div id="modalVisualizacaoAluno" class="modal modal-fixed-footer">  
+<!-- VISUALIZAR DETALHES DO VEICULO -->
+<div id="modalVisualizacaoVeiculo" class="modal modal-fixed-footer modal-veiculo">
+
     <div class="modal-content">
         <nav class="center">
-            <h5 class="brand-logo center">Detalhes do Aluno</h5>            
+            <h5 class="brand-logo center">Detalhes do Veiculo</h5>
         </nav>
         <div class="row">        
-            <div class="row">               
+            <div class="row">                    
                 <div class="input-field col s4">          
-                    <label for="nome">Nome Completo</label><br/>
-                    <p id="nome">{{alunoSelecionado.nome + ' ' + alunoSelecionado.sobreNome}}</p>
+                    <label for="descricao">Descrição</label><br/>
+                    <p id="descricao">{{veiculoSelecionado.descricao}}</p>
                 </div>                                            
                 <div class="input-field col s4">          
-                    <label for="dataDeNascimento">Data de Nascimento</label><br/>
-                    <p id="dataDeNascimento">{{alunoSelecionado.dataDeNascimento| date:' dd/MM/yyyy'}}</p>
+                    <label for="placa">Placa</label><br/>
+                    <p id="placa">{{veiculoSelecionado.placa | placaFilter}}</p>
                 </div>                                            
                 <div class="input-field col s4">          
-                    <label for="sexo1">Sexo</label><br/>
-                    <p id="sexo1">{{alunoSelecionado.sexo}}</p>
+                    <label for="qtdeAssentos">Quantidade de Assentos</label><br/>
+                    <p id="qtdeAssentos">{{veiculoSelecionado.qtdeAssentos}}</p>
                 </div> 
                 <div class="input-field col s4">          
-                    <label for="etnia1">Etnia</label><br/>
-                    <p id="etnia1">{{alunoSelecionado.raca}}</p>
+                    <label for="estado">Estado</label><br/>
+                    <p id="estado">{{veiculoSelecionado.estado.nome}}</p>
                 </div> 
                 <div class="input-field col s4">          
-                    <label for="estadoCivil1">Estado Civil</label><br/>
-                    <p id="estadoCivil1">{{alunoSelecionado.estadoCivil}}</p>
-                </div> 
-                <div class="input-field col s4">          
-                    <label for="naturalidade">Naturalidade</label><br/>
-                    <p id="naturalidade">{{alunoSelecionado.naturalidade}}</p>
-                </div> 
-                <div class="input-field col s4">          
-                    <label for="nacionalidade">Nacionalidade</label><br/>
-                    <p id="nacionalidade">{{alunoSelecionado.nacionalidade}}</p>
-                </div>  
-                <div class="input-field col s4">          
-                    <label for="tipoSanguineo1">Tipo Sanguíneo</label><br/>
-                    <p id="tipoSanguineo1">{{alunoSelecionado.tipoSanguineo}}</p>
-                </div>  
-                <div class="input-field col s4">          
-                    <label for="nomeDoPai">Nome do Pai</label><br/>
-                    <p id="nomeDoPai">{{alunoSelecionado.nomeDoPai}}</p>
-                </div>
-                <div class="input-field col s4">          
-                    <label for="nomeDaMae">Nome da Mãe</label><br/>
-                    <p id="nomeDaMae">{{alunoSelecionado.nomeDaMae}}</p>
-                </div>
-                <div class="input-field col s4">          
-                    <label for="nomeDoResponsavel">Nome do Responsável</label><br/>
-                    <p id="nomeDoResponsavel">{{alunoSelecionado.nomeDoResponsavel}}</p>
-                </div>
-
-                <!-- DOCUMENTOS --> 
-                <div class="col s12 subsecao">
-                    <h5>Documentos Pessoais</h5>
-                </div>
-
-                <div class="input-field col s4">
-                    <label for="rg">RG</label><br/>
-                    <p id="rg">{{alunoSelecionado.documentosPessoais.rg}}</p>
-                </div>  
-                <div class="input-field col s4">
-                    <label for="orgaoEmissorDoRg">Orgão Emissor</label><br/>
-                    <p id="orgaoEmissorDoRg">{{alunoSelecionado.documentosPessoais.orgaoEmissorDoRg}}></p>
-                </div>  
-                <div class="input-field col s4">
-                    <label for="estadoDeEmissaoDoRg1">Estado de Emissão</label><br/>
-                    <p id="estadoDeEmissaoDoRg1">{{alunoSelecionado.documentosPessoais.estadoDeEmissaoDoRg}}</p>
-                </div>  
-                <div class="input-field col s4">
-                    <label for="dataDeEmissaoDoRg">Data de Emissão</label><br/>
-                    <p id="dataDeEmissaoDoRg">{{alunoSelecionado.documentosPessoais.dataDeEmissaoDoRg| date:' dd/MM/yyyy'}}</p>
-                </div> 
-                <div class="input-field col s4">
-                    <label for="cpf">CPF</label><br/>
-                    <p id="cpf">{{alunoSelecionado.documentosPessoais.cpf}}</p>
-                </div>
-                <div class="input-field col s4">
-                    <label for="registroDeNascimento">Registro de Nascimento</label><br/>
-                    <p id="registroDeNascimento">{{alunoSelecionado.documentosPessoais.registroDeNascimento}}></p>
-                </div>
-                <div class="input-field col s4">
-                    <label for="resevista">Reservista</label><br/>
-                    <p id="resevista">{{alunoSelecionado.documentosPessoais.resevista}}</p>
-                </div>
-
-
-                <!-- CONTATO -->
-
-                <div class="col s12 subsecao">
-                    <h5>Contato</h5>
-                </div>
-                <div class="input-field col s4">
-                    <label>Email Pessoal</label><br/>                                    
-                    <p id="email">{{alunoSelecionado.contato.email}}</p>
-                </div>
-                <div class="input-field col s4">
-                    <label>Telefone Celular</label><br/>                                       
-                    <p id="telefoneCelular">{{alunoSelecionado.contato.telefoneCelular}}</p>
-                </div>
-                <div class="input-field col s4">
-                    <label>Telefone Residencial</label><br/>                                       
-                    <p id="telefoneResidencial">{{alunoSelecionado.contato.telefoneResidencial}}</p>
-                </div>
-
-
-                <!-- ENDEREÇO -->
-
-                <div class="col s12 subsecao">
-                    <h5>Endereço</h5>
-                </div>
-                <div class="input-field col s4">
-                    <label for="cep">Cep</label><br/>
-                    <p id="cep">{{alunoSelecionado.endereco.cep}}</p> 
-                </div>                  
-                <div class="input-field col s4">
-                    <label for="estado1">Estado</label><br/>
-                    <p id="estado1">{{alunoSelecionado.endereco.estado.uf}}</p>
-                </div>                  
-                <div class="input-field col s4">
-                    <label for="municipio1">Município</label><br/>
-                    <p id="municipio1">{{alunoSelecionado.endereco.cidade.nome}}</p> 
-                </div>                  
-                <div class="input-field col s4">
-                    <label for="logradouro">Logradouro</label><br/>
-                    <p id="logradouro">{{alunoSelecionado.endereco.logradouro}}</p>
-                </div>
-                <div class="input-field col s4">
-                    <label for="bairro">Bairro</label><br/>
-                    <p id="bairro">{{alunoSelecionado.endereco.bairro}}</p> 
-                </div>
-                <div class="input-field col s4">
-                    <label for="complemento">Complemento</label><br/>
-                    <p id="complemento">{{alunoSelecionado.endereco.complemento}}</p> 
-                </div>
-                <div class="input-field col s4">
-                    <label for="numero">Número</label><br/>
-                    <p id="numero">{{alunoSelecionado.endereco.numero}}</p>
-                </div>
-            </div>
-
-
-            <!--DADOS DA CONTA-->
-
-            <div class="col s12 subsecao">
-                <h5>Dados da Conta</h5>
-            </div>
-            <div class="input-field col s4">
-                <label>Login</label><br/>                                       
-                <p id="login">{{alunoSelecionado.contato.email}}</p>
-            </div>
-            <div class="input-field col s4">
-                <label>Senha</label><br/>                                       
-                <p id="senha">{{alunoSelecionado.conta.senha}}</p>
-            </div>
-            <div class="input-field col s4">
-                <label>Status do cadastro</label><br/>                                       
-                <p id="status1">{{alunoSelecionado.statusDoCadastro}}</p>
-            </div>                              
-        </div>
-    </div>
-    <div class="modal-footer">      
-        <a class="modal-action modal-close waves-effect waves-red btn-flat">Fechar</a>
-    </div>      
-</div>
-<!-- EDIÇÃO DE ALUNO -->
-<div id="modalEditarAluno" class="modal modal-fixed-footer modal-alunoSelecionado">
-    <div class="modal-content">
-        <nav class="center">
-            <h5 class="brand-logo center">Editar Aluno</h5>
-        </nav>
-        <div class="row">        
-            <div class="row">     
-                <div class="card-tabs">
-                    <ul class="tabs tabs-fixed-width tabs-blue">
-                        <li class="tab" ><a class="active" href="#dadosgerais">Dados Gerais</a></li>
-                        <li class="tab"><a href="#documentos">Documentos Pessoais</a></li>
-                        <li class="tab"><a href="#contato">Contato</a></li>
-                        <li class="tab"><a href="#endereco">Endereço</a></li>
-                        <li class="tab"><a href="#dadosacademicos">Dados Acadêmicos</a></li>
-                        <li class="tab"><a href="#dadosconta">Dados da Conta</a></li>    
-                    </ul>
-                </div>
-                <div id="dadosgerais">
-                    <!-- DADOS GERAIS -->          
-                    <div class="col s12 subsecao">
-                        <h5>Dados Gerais</h5>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="nome" type="text" class="validate" ng-model="alunoSelecionado.nome"  required maxlength="100"></input>
-                        <label for="nome" class="active">Nome</label>
-                    </div>                              
-                    <div class="input-field col s6">
-                        <input id="sobreNome" type="text" class="validate" ng-model="alunoSelecionado.sobreNome"  required maxlength="150"></input>
-                        <label for="sobreNome" class="active">Sobrenome</label>
-                    </div>                                                              
-                    <div class="input-field col s6">
-                        <input id="dataDeNascimento" type="text" ng-model="alunoSelecionado.dataDeNascimento" ui-date  required></input>
-                        <label for="dataDeNascimento" class="active">Data de nascimento</label>
-                    </div>                              
-
-                    <div class="input-field col s6">
-                        <select id="sexoEdicao" ng-model="alunoSelecionado.sexo" class="validate" required>
-                            <option value="" disabled="" selected="">Selecione um sexo</option>
-                            <option value="MASCULINO">Masculino</option>
-                            <option value="FEMININO">Feminino</option>                                  
-                        </select>
-                        <label for="sexoEdicao" class="active">Sexo</label>                                        
-                    </div>  
-
-
-                    <div class="input-field col s6">
-                        <select id="etniaEdicao" ng-model="alunoSelecionado.raca" class="validate"  required>
-                            <option value="" disabled="" selected="">Selecione uma etnia</option>
-                            <option ng-repeat="raca in racas" value="{{raca.value}}">{{raca.nome}}</option>
-                        </select>
-                        <label for="etniaEdicao" class="active">Etnia</label>                                        
-                    </div>  
-
-                    <div class="input-field col s6">
-                        <select id="estadoCivilEdicao" ng-model="alunoSelecionado.estadoCivil" class="validate"  required>
-                            <option value="" disabled="" selected="">Selecione um estado civil</option>
-                            <option ng-repeat="estadoCivil in estadosCivis" value="{{estadoCivil.value}}">{{estadoCivil.nome}}</option>
-                        </select>
-                        <label for="estadoCivilEdicao" class="active">Estado civil</label>                                        
-                    </div>                              
-                    <div class="input-field col s6">
-                        <input id="naturalidade" type="text" class="validate" ng-model="alunoSelecionado.naturalidade" maxlength="150"></input>
-                        <label for="naturalidade" class="active">Naturalidade</label>
-                    </div> 
-                    <div class="input-field col s6">
-                        <input id="nacionalidade" type="text" class="validate" ng-model="alunoSelecionado.nacionalidade" maxlength="150"></input>
-                        <label for="nacionalidade" class="active">Nacionalidade</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <select id="tipoSanguineoEdicao" ng-model="alunoSelecionado.tipoSanguineo">
-                            <option value="" disabled="" selected="">Selecione um tipo sanguíneo</option>
-                            <option ng-repeat="tipoSanguineo in tiposSanguineos" value="{{tipoSanguineo.value}}">{{tipoSanguineo.nome}}</option>
-                        </select>
-                        <label for="tipoSanguineoEdicao" class="active">Tipo Sanguíneo</label>
-                    </div>  
-
-                    <div class="input-field col s6">
-                        <input id="nomeDoPai" type="text" class="validate" ng-model="alunoSelecionado.nomeDoPai" required maxlength="150"></input>
-                        <label for="nomeDoPai" class="active">Nome do Pai</label>
-                    </div> 
-                    <div class="input-field col s6">
-                        <input id="nomeDaMae" type="text" class="validate" ng-model="alunoSelecionado.nomeDaMae" required maxlength="150"></input>
-                        <label for="nomeDaMae" class="active">Nome da Mãe</label>
-                    </div> 
-                    <div class="input-field col s6">
-                        <input id="nomeDoResponsavel" type="text" class="validate" ng-model="alunoSelecionado.nomeDoResponsavel" maxlength="150"></input>
-                        <label for="nomeDoResponsavel" class="active">Nome do Responsável</label>
-                    </div> 
-                    <!--<div class="input-field col s6">
-                        <input id="emailDoResponsavel" type="email" class="validate" ng-model="alunoSelecionado.emailDoResponsavel"></input>
-                        <label for="emailDoResponsavel">Email do Responsável</label>
-                    </div> -->
-                </div> 
-
-                <!-- DOCUMENTOS --> 
-                <div id="documentos"> 
-                    <div class="col s12 subsecao">
-                        <h5>Documentos Pessoais</h5>
-                    </div>
-
-                    <div class="input-field col s4">
-                        <input id="rg" type="text" class="validate" ng-model="alunoSelecionado.documentosPessoais.rg" required maxlength="15"></input>
-                        <label for="rg" class="active">RG</label>
-                    </div>  
-                    <div class="input-field col s4">
-                        <input id="orgaoEmissorDoRg" type="text" class="validate" ng-model="alunoSelecionado.documentosPessoais.orgaoEmissorDoRg" required maxlength="100"></input>
-                        <label for="orgaoEmissorDoRg" class="active">Orgão Emissor</label>
-                    </div>  
-                    <div class="input-field col s4">
-                        <select ng-model="alunoSelecionado.documentosPessoais.estadoDeEmissaoDoRg"  required>
-                            <option value="" disabled="" selected="">Selecione um estado</option>
-                        </select>
-                        <label class="active">Estado de Emissão</label>                                        
-                    </div>  
-                    <div class="input-field col s6">
-                        <input id="dataDeEmissaoDoRg" type="text"  ng-model="alunoSelecionado.documentosPessoais.dataDeEmissaoDoRg" ui-date  required></input>
-                        <label for="dataDeEmissaoDoRg" class="active">Data de Emissão</label>
-                    </div> 
-                    <div class="input-field col s6">
-                        <input id="cpf" type="text" class="validate" ng-model="alunoSelecionado.documentosPessoais.cpf" required maxlength="11"></input>
-                        <label for="cpf" class="active">CPF</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="registroDeNascimento" type="text" class="validate" ng-model="alunoSelecionado.documentosPessoais.registroDeNascimento" required maxlength="150"></input>
-                        <label for="registroDeNascimento" class="active">Registro de Nascimento</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="resevista" type="text" ng-model="alunoSelecionado.documentosPessoais.resevista" maxlength="50"></input>
-                        <label for="resevista" class="active">Reservista</label>
-                    </div>
-                </div>
-
-                <!-- CONTATO -->
-                <div id="contato">
-                    <div class="col s12 subsecao">
-                        <h5>Contato</h5>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="email" type="email" class="validate" ng-model="alunoSelecionado.contato.email" required maxlength="50"></input>
-                        <label class="active">Email Pessoal</label>                                       
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="telefoneCelular" type="text" ng-model="alunoSelecionado.contato.telefoneCelular"  required maxlength="15"></input>
-                        <label class="active">Telefone Celular</label>                                       
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="telefoneResidencial" type="text" ng-model="alunoSelecionado.contato.telefoneResidencial" maxlength="15"></input>
-                        <label class="active">Telefone Residencial</label>                                       
-                    </div>
-                </div>
-
-                <!-- ENDEREÇO -->
-                <div id="endereco">
-                    <div class="col s12 subsecao">
-                        <h5>Endereço</h5>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="cep" type="text" class="validate" ng-model="alunoSelecionado.endereco.cep" ng-blur="pesquisaEstadoECidade(alunoSelecionado.endereco.cep)" ></input> 
-                        <label for="cep" class="active">Cep</label>
-                    </div>                  
-                    <div class="input-field col s6">
-                        <input id="estado" type="text" ng-model="alunoSelecionado.endereco.estado.uf" readonly></input>
-                        <label class="active" for="estado">Estado</label>
-                    </div>                  
-                    <div class="input-field col s6">
-                        <input id="municipio" type="text" ng-model="alunoSelecionado.endereco.cidade.nome" readonly></input> 
-                        <label class="active" for="municipio">Município</label>
-                    </div>                  
-                    <div class="input-field col s6">
-                        <input id="logradouro" type="text" class="validate" ng-model="alunoSelecionado.endereco.logradouro" ></input>
-                        <label for="logradouro" class="active">Logradouro</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="bairro" type="text" class="validate" ng-model="alunoSelecionado.endereco.bairro" ></input> 
-                        <label for="bairro" class="active">Bairro</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="complemento" type="text" class="validate" ng-model="alunoSelecionado.endereco.complemento"></input> 
-                        <label for="complemento" class="active">Complemento</label>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="numero" type="text" class="validate" ng-model="alunoSelecionado.endereco.numero" ></input>
-                        <label for="numero" class="active">Número</label>
-                    </div>
-                </div>
-
-
-                <!--DADOS DA CONTA-->
-                <div id="dadosconta">
-                    <div class="col s12 subsecao">
-                        <h5>Dados da Conta</h5>
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="login" type="text" ng-model="alunoSelecionado.contato.email" readonly maxlength="50"></input>
-                        <label  class="active">Login</label>                                       
-                    </div>
-                    <div class="input-field col s6">
-                        <input id="senha" type="text" ng-model="alunoSelecionado.conta.senha" maxlength="15"></input>
-                        <label class="active">Senha</label>                                       
-                    </div>
-                    <div class="input-field col s6">
-                        <select ng-model="alunoSelecionado.statusDoCadastro" disabled="true">
-                            <option value="ATIVO" disabled="true" selected="true">Ativo</option>
-                        </select>
-                        <label class="active">Status do cadastro</label>                                       
-                    </div>                              
+                    <label for="cidade">Cidade</label><br/>
+                    <p id="cidade">{{veiculoSelecionado.cidade.nome}}</p>
                 </div>
             </div>            
         </div>       
     </div>
     <div class="modal-footer">
-        <button class="waves-effect waves-green btn-flat" ng-click="preparaAtualizacaoAluno(alunoSelecionado)" data-target="modalConfirmacaoAtualizacaoDeAluno">Atualizar</button>      
-        <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
-    </div>  
+        <button class="modal-action modal-close waves-effect waves-red btn-flat">Fechar</button>
+    </div>    
 </div>
 
-<!-- ATUALIZAÇÃO DE ALUNO -->
-<div id="modalConfirmacaoAtualizacaoDeAluno" class="modal bottom-sheet">
+<!-- EDIÇÃO DE VEICULO -->
+<div id="modalEditarVeiculo" class="modal modal-fixed-footer modal-alunoSelecionado">
+    <div class="modal-content">
+        <nav class="center">
+            <h5 class="brand-logo center">Editar Veiculo</h5>
+        </nav>
+        <div class="row">        
+            <div class="row">     
+             <div class="row">                    
+                <div class="input-field col s6">
+                    <input id="descricao" type="text" class="validate" ng-model="veiculoSelecionado.descricao"  required maxlength="150"></input>
+                    <label for="descricao">Descrição</label>
+                </div>                              
+                <div class="input-field col s6">
+                    <input id="placa" type="text" class="validate" ng-model="veiculoSelecionado.placa"  required maxlength="25" ui-placa></input>
+                    <label for="placa">Placa</label>
+                </div>
+                <div class="input-field col s6">
+                    <input id="qtdeAssentos" type="number" class="validate" ng-model="veiculoSelecionado.qtdeAssentos"  required></input>
+                    <label for="qtdeAssentos">Quantidade de Assentos</label>
+                </div>                                                      
+                <div class="input-field col s6">
+                    <select id="estadoEditar" class="validate" required ng-model="veiculoSelecionado.estado.uf">
+                        <option value="" disabled="" selected="">Selecione um estado</option>
+                        <option ng-repeat="estado in estados" value="{{estado.uf}}">{{estado.uf}}</option>
+                    </select>
+                    <label for="estadoEditar">Estado</label>                                        
+                </div>                      
+                <div class="input-field col s6">
+                    <select id="cidadeEditar" class="validate" required ng-model="veiculoSelecionado.cidade.nome">
+                        <option value="" disabled="" selected="">Selecione uma cidade</option>
+                        <option ng-repeat="cidade in cidades" value="{{cidade.nome}}">{{cidade.nome}}</option>
+                    </select>
+                    <label for="cidadeEditar">Cidade</label>                                        
+                </div>                      
+            </div> 
+        </div>
+    </div>
+</div>            
+<div class="modal-footer">
+    <button class="waves-effect waves-green btn-flat" data-target="modalConfirmacaoAtualizacaoDeVeiculo">Atualizar</button>      
+    <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+</div>  
+</div>
+
+<!-- CONFIRMAÇÂO ATUALIZAÇÂO DE VEICULO -->
+<div id="modalConfirmacaoAtualizacaoDeVeiculo" class="modal bottom-sheet">
     <div class="modal-content modal-confirmacao">
         <h5>Confirmar operação</h5>
-        <p>Deseja realmente atualizar esse aluno?</p>
+        <p>Deseja realmente atualizar esse veiculo?</p>
     </div>
     <div class="modal-footer">
-        <button ng-click="editarAluno(alunoSelecionado)" class="waves-effect waves-green btn-flat">Confirmar</button>
+        <button ng-click="editarVeiculo(veiculoSelecionado)" class="waves-effect waves-green btn-flat">Confirmar</button>
         <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
     </div>
 </div>
 
 
-<!-- EXCLUSÃO DE ALUNO -->
-<div id="modalConfirmacaoExclusaoDeAluno" class="modal bottom-sheet">
+<!-- CONFIRMAÇÂO EXCLUSÃO DE VEICULO -->
+<div id="modalConfirmacaoExclusaoDeVeiculo" class="modal bottom-sheet">
   <div class="modal-content modal-confirmacao">
     <h5>Confirmar operação</h5>
-    <p>Deseja realmente excluir esse aluno, caso exclua o mesmo será inativado!</p>
+    <p>Deseja realmente excluir esse veiculo, caso exclua o mesmo será inativado!</p>
 </div>
 <div class="modal-footer">
-    <button ng-click="excluirAluno()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+    <button ng-click="excluirVeiculo()" class="waves-effect waves-green btn-flat">Confirmar</button>      
     <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
 </div>
 </div>
 
-<!-- ATIVAR ALUNO -->
-<div id="modalConfirmacaoAtivacaoDeAluno" class="modal bottom-sheet">
+<!-- CONFIRMAÇÂO DE ATIVAÇÂO DE VEICULO -->
+<div id="modalConfirmacaoAtivacaoDeVeiculo" class="modal bottom-sheet">
   <div class="modal-content modal-confirmacao">
     <h5>Confirmar operação</h5>
-    <p>Deseja realmente ativar esse aluno?</p>
+    <p>Deseja realmente ativar esse veiculo?</p>
 </div>
 <div class="modal-footer">
-    <button ng-click="ativarAluno()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+    <button ng-click="ativarVeiculo()" class="waves-effect waves-green btn-flat">Confirmar</button>      
     <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
 </div>
 </div>
