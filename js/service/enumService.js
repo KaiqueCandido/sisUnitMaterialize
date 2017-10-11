@@ -1,40 +1,29 @@
 app = angular.module('app');
-app.service('enumService', function() {	
-	this.getEstadosCivis = function (){
-		var estadosCivis = [
-		{nome:"Casado", value: "CASADO"}, 
-		{nome: "Solteiro", value: "SOLTEIRO"},
-		{nome: "Viúvo", value: "VIUVO"},
-		{nome: "Divorciado", value: "DIVORCIADO"},
-		];
-		return estadosCivis;
+app.service('enumService', function($http, $rootScope, configValue) {					
+	
+	this.diasDaSemana = function() {
+		$rootScope.pageLoading = true;
+		return $http.get(configValue.baseUrl + '/enum/diasdasemana');
+	};
+	
+	this.sexos = function() {
+		$rootScope.pageLoading = true;
+		return $http.get(configValue.baseUrl + '/enum/sexos');
 	};
 
-	this.getRacas = function (){
-		var racas = [
-		{nome:"Branca", value: "BRANCA"}, 
-		{nome: "Preta", value: "PRETA"},
-		{nome: "Parda", value: "PARDA"},
-		{nome: "Amarela", value: "AMARELA"},
-		{nome: "Indígena", value: "INDIGENA"}, 
-		{nome: "Não Declarada", value: "NAODECLARADA"}
-		];
-		return racas;
+	this.statusDosCadastros = function() {
+		$rootScope.pageLoading = true;
+		return $http.get(configValue.baseUrl + '/enum/statusdocadastro');
 	};
 
-	this.getTiposSanguineos = function (){
-		var tiposSanguineos = [
-		{nome:"A+", value: "PosA"}, 
-		{nome: "A-", value: "NegA"},
-		{nome: "B+", value: "PosB"},
-		{nome: "B-", value: "NegB"},
-		{nome: "AB+", value: "PosAB"},
-		{nome: "AB-", value: "NegAB"},
-		{nome: "O+", value: "PosO"},
-		{nome: "O-", value: "NegO"},
-		];
-		return tiposSanguineos;
+	this.tiposDeZona = function() {
+		$rootScope.pageLoading = true;
+		return $http.get(configValue.baseUrl + '/enum/tipodezona');
 	};
 
+	this.turnos = function() {
+		$rootScope.pageLoading = true;
+		return $http.get(configValue.baseUrl + '/enum/turno');
+	};
 
 });

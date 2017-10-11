@@ -8,6 +8,7 @@ app.controller('veiculosController', function ($scope, $rootScope, $state, veicu
 	$scope.veiculo = {};
 	$scope.veiculo.estado = {};
 	$scope.veiculo.cidade = {};		
+	
 	$scope.estados = [];
 	$scope.cidades = [];
 
