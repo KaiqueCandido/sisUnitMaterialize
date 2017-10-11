@@ -84,7 +84,7 @@
                         <div class="input-field col s6">
                             <select id="sexo" class="validate" required>
                                 <option value="" disabled="" selected="">Selecione um sexo</option>
-                                <option ng-repeat="sexo in sexos" value="{{sexo.$}}">{{sexo.$}}</option>
+                                <option ng-repeat="sexo in sexos" value="{{sexo.$}}">{{sexo.$ | sexoFilter}}</option>
                             </select>
                             <label for="sexo">Sexo</label>                                        
                         </div>                               
@@ -115,7 +115,7 @@
                         </div>                    
 
                         <div class="input-field col s6">
-                            <input id="cpf" type="text" class="validate" ng-model="motorista.documentosPessoais.cpf" required ></input>
+                            <input id="cpf" type="text" class="validate" ng-model="motorista.documentosPessoais.cpf" required ui-cpf></input>
                             <label for="cpf">CPF</label>                            
                         </div>
 
@@ -144,7 +144,7 @@
                         <div class="input-field col s6">
                             <select id="tipoDeZona" class="validate" required>
                                 <option value="" disabled="" selected="">Selecione o Tipo de Zona</option>
-                                <option ng-repeat="tipoDeZona in tiposDeZona" value="{{tipoDeZona.$}}">{{tipoDeZona.$}}</option>
+                                <option ng-repeat="tipoDeZona in tiposDeZona" value="{{tipoDeZona.$}}">{{tipoDeZona.$ | tipoDeZonaFilter}}</option>
                             </select>
                             <label for="tipoDeZona">Tipo de Zona</label>                                        
                         </div>
@@ -155,7 +155,7 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="cep" type="text" class="validate" ng-model="motorista.endereco.cep" ng-blur="pesquisaEstadoECidade(motorista.endereco.cep)"></input>
+                            <input id="cep" type="text" class="validate" ng-model="motorista.endereco.cep" ng-blur="pesquisaEstadoECidade(motorista.endereco.cep)" ui-cep></input>
                             <label for="cep">CEP</label>                            
                         </div>
 
@@ -172,12 +172,12 @@
 
                     <div id="contato">
                         <div class="input-field col s6">
-                            <input id="telefoneFixo" type="text" class="validate" ng-model="motorista.contato.telefoneFixo"></input>
+                            <input id="telefoneFixo" type="text" class="validate" ng-model="motorista.contato.telefoneFixo" ui-telefone></input>
                             <label for="telefoneFixo">Telefone Fixo</label>                            
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="telefoneCelular" type="text" class="validate" ng-model="motorista.contato.telefoneCelular" required></input>
+                            <input id="telefoneCelular" type="text" class="validate" ng-model="motorista.contato.telefoneCelular" required ui-telefone></input>
                             <label for="telefoneCelular">Telefone Celular</label>                            
                         </div>
 
@@ -238,7 +238,7 @@
 
                 <div class="input-field col s4">          
                     <label for="sexo">Sexo</label><br/>
-                    <p id="sexo">{{motoristaSelecionado.sexo}}</p>
+                    <p id="sexo">{{motoristaSelecionado.sexo | sexoFilter}}</p>
                 </div>
 
                 <div class="input-field col s12">          
@@ -267,12 +267,12 @@
 
                 <div class="input-field col s4">          
                     <label for="cpf">CPF</label><br/>
-                    <p id="cpf">{{motoristaSelecionado.documentosPessoais.cpf}}</p>
+                    <p id="cpf">{{motoristaSelecionado.documentosPessoais.cpf | cpfFilter}}</p>
                 </div>
 
                 <div class="input-field col s4">          
                     <label for="cnh">CNH</label><br/>
-                    <p id="cnh">{{motoristaSelecionado.documentosPessoais.cnh}}</p>
+                    <p id="cnh">{{motoristaSelecionado.codCnh}}</p>
                 </div>
                 
                 <div class="input-field col s12">          
@@ -296,7 +296,7 @@
 
                 <div class="input-field col s4">          
                     <label for="tipoDeZona">Zona</label><br/>
-                    <p id="tipoDeZona">{{motoristaSelecionado.endereco.tipoDeZona}}</p>
+                    <p id="tipoDeZona">{{motoristaSelecionado.endereco.tipoDeZona | tipoDeZonaFilter}}</p>
                 </div>
 
                 <div class="input-field col s4">          
@@ -306,7 +306,7 @@
 
                 <div class="input-field col s4">          
                     <label for="cep">CEP</label><br/>
-                    <p id="cep">{{motoristaSelecionado.endereco.cep}}</p>
+                    <p id="cep">{{motoristaSelecionado.endereco.cep | cepFilter}}</p>
                 </div>
 
                 <div class="input-field col s4">          
@@ -325,12 +325,12 @@
 
                 <div class="input-field col s4">          
                     <label for="telefoneFixo">Telefone Fixo</label><br/>
-                    <p id="telefoneFixo">{{motoristaSelecionado.contato.telefoneFixo}}</p>
+                    <p id="telefoneFixo">{{motoristaSelecionado.contato.telefoneFixo | telefoneFilter}}</p>
                 </div>
 
                 <div class="input-field col s4">          
                     <label for="telefoneCelular">Telefone Celular</label><br/>
-                    <p id="telefoneCelular">{{motoristaSelecionado.contato.telefoneCelular}}</p>
+                    <p id="telefoneCelular">{{motoristaSelecionado.contato.telefoneCelular | telefoneFilter}}</p>
                 </div>
 
                 <div class="input-field col s4">          
@@ -344,7 +344,7 @@
 
                 <div class="input-field col s4">          
                     <label for="login">Login</label><br/>
-                    <p id="login">{{motoristaSelecionado.contas[0].login}}</p>
+                    <p id="login">{{motoristaSelecionado.conta.login}}</p>
                 </div>                
             </div>            
         </div>       
@@ -392,7 +392,7 @@
                         <div class="input-field col s6">
                             <select id="sexo" class="validate" ng-model="motoristaSelecionado.sexo" required>
                                 <option value="" disabled="" selected="">Selecione um sexo</option>
-                                <option ng-repeat="sexo in sexos" value="{{sexo.$}}">{{sexo.$}}</option>
+                                <option ng-repeat="sexo in sexos" value="{{sexo.$}}">{{sexo.$ | sexoFilter}}</option>
                             </select>
                             <label for="sexo">Sexo</label>                                        
                         </div>                               

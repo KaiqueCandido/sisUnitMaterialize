@@ -161,7 +161,7 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 			if(typeof response.data.erro === 'undefined') {				
 				cidadeService.pesquisarPorCodIbge(response.data.ibge).then(function sucess(response) {
 					$rootScope.pageLoading = false;	
-					$scope.motorista.endereco.cidade = response.data;
+					$scope.motorista.endereco.cidade = response.data;					
 				}, function error() {
 					$rootScope.pageLoading = false;
 					Materialize.toast('Não foi possivel encontrar a cidade para o cep informado', 5000, 'rounded toasts-error');
@@ -169,9 +169,10 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 
 				$scope.estados.forEach(function (estado) {
 					if(estado.uf === response.data.uf){						
-						$scope.motorista.endereco.estado = estado;				
+						$scope.motorista.endereco.estado = estado;								
 					}
 				});
+				Materialize.updateTextFields();
 			} else {				
 				$rootScope.pageLoading = false;	
 				Materialize.toast('O cep informado não existe na base de dados!', 5000, 'rounded toasts-error');
