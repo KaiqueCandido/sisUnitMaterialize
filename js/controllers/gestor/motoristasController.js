@@ -26,6 +26,7 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 		motoristaService.listar().then(function sucess(response) {
 			$rootScope.pageLoading = false;
 			if(response.data.length > 0) {
+				$scope.motoristas = [];			
 				$scope.motoristas = response.data;			
 			} else {
 				Materialize.toast('Não foi encontrado registros de motorista', 5000, 'rounded toasts-warning');
@@ -100,11 +101,6 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 	});		
 
 	$scope.salvarMotorista = function () {		
-		for (var i = 0; i < $scope.contaMotorista.permissoes.length; i++) {
-			$scope.contaMotorista.permissoes[i] = angular.fromJson($scope.contaMotorista.permissoes[i]);
-		};
-		$scope.motorista.contas =[]; $scope.motorista.contas.push($scope.contaMotorista);
-		console.log($scope.motorista);
 		motoristaService.salvar($scope.motorista).then(function sucess(response) {
 			$rootScope.pageLoading = false;
 			Materialize.toast('Motorista cadastrado com sucesso', 5000, 'rounded toasts-sucess');
@@ -115,7 +111,51 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 			Materialize.toast('Não foi possivel cadastrar o motorista', 5000, 'rounded toasts-error');
 		});
 	};
-	
+
+	$scope.confirmarAtualizacaoDeMotorista = function () {	
+		$('#modalConfirmacaoEdicaoDeMotorista').modal('open'); 
+	};
+
+	$scope.editarMotorista = function () {	
+		motoristaService.atualizar($scope.motoristaSelecionado).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Motorista atualizado com sucesso', 5000, 'rounded toasts-sucess');
+			delete $scope.motoristaSelecionado;
+			$scope.carregarMotoristas();
+			$('#modalConfirmacaoEdicaoDeMotorista').modal('close'); 
+			$('#modalEditarMotorista').modal('close'); 
+		}, function error() {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel atualizar o motorista', 5000, 'rounded toasts-error');
+		});
+	};
+
+	$scope.inativarMotorista = function () {	
+		motoristaService.inativar($scope.motoristaSelecionado).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('O status do motorista foi modificado para INATIVO', 5000, 'rounded toasts-sucess');
+			delete $scope.motoristaSelecionado;
+			$scope.carregarMotoristas();
+			$('#modalConfirmacaoExclusaoDeMotorista').modal('close'); 
+		}, function error() {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel atualizar o motorista', 5000, 'rounded toasts-error');
+		});
+	};
+
+	$scope.ativarMotorista = function () {	
+		motoristaService.ativar($scope.motoristaSelecionado).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('O status do motorista foi modificado para ATIVO', 5000, 'rounded toasts-sucess');
+			delete $scope.motoristaSelecionado;
+			$scope.carregarMotoristas();
+			$('#modalConfirmacaoAtivacaoDeMotorista').modal('close'); 
+		}, function error() {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel ativar o motorista', 5000, 'rounded toasts-error');
+		});
+	};
+
 	$scope.pesquisaEstadoECidade = function (cep) {
 		cepService.buscarEstadoECidade(cep).then(function sucess(response) {			
 			if(typeof response.data.erro === 'undefined') {				
@@ -126,7 +166,7 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 					$rootScope.pageLoading = false;
 					Materialize.toast('Não foi possivel encontrar a cidade para o cep informado', 5000, 'rounded toasts-error');
 				});
-				
+
 				$scope.estados.forEach(function (estado) {
 					if(estado.uf === response.data.uf){						
 						$scope.motorista.endereco.estado = estado;				
@@ -137,55 +177,55 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 				Materialize.toast('O cep informado não existe na base de dados!', 5000, 'rounded toasts-error');
 				delete $scope.motorista.endereco.estado;
 				delete $scope.motorista.endereco.cidade;			
-			}			
+			};			
 		}, function error() {
 			$rootScope.pageLoading = false;
 			Materialize.toast('O cep informado é invalido!', 5000, 'rounded toasts-error');
 			delete $scope.motorista.endereco.estado;
 			delete $scope.motorista.endereco.cidade;			
 		});	
-	};
+};
 
-	$scope.selecionaMotorista = function(motorista) {
-		if(motorista.selecionado === 'grey') {
-			motorista.selecionado = 'none';
-			$scope.selecionado = true;
-			$scope.motoristaSelecionadoInativo = true;
-		} else {
-			if (motorista.contas[0].statusDoCadastro === 'ATIVO'){
-				$scope.limpaSelecoes();
-				motorista.selecionado = 'grey';
-				$scope.selecionado = false;			
-				$scope.motoristaSelecionado = motorista;
-			} else {
-				$scope.limpaSelecoes();
-				motorista.selecionado = 'grey';
-				$scope.motoristaSelecionado = motorista;
-				$scope.motoristaSelecionadoInativo = false;
-			}
-		}
-	};
-
-	$scope.alternaStatusDasEntidades = function(){
-		$scope.statusDasEntidades === 'ATIVO' ? $scope.statusDasEntidades = 'INATIVO' : $scope.statusDasEntidades = 'ATIVO';
+$scope.selecionaMotorista = function(motorista) {
+	if(motorista.selecionado === 'grey') {
+		motorista.selecionado = 'none';
 		$scope.selecionado = true;
 		$scope.motoristaSelecionadoInativo = true;
-		$scope.limpaSelecoes();
+	} else {
+		if (motorista.conta.statusDoCadastro === 'ATIVO'){
+			$scope.limpaSelecoes();
+			motorista.selecionado = 'grey';
+			$scope.selecionado = false;			
+			$scope.motoristaSelecionado = motorista;
+		} else {
+			$scope.limpaSelecoes();
+			motorista.selecionado = 'grey';
+			$scope.motoristaSelecionado = motorista;
+			$scope.motoristaSelecionadoInativo = false;
+		}
 	}
+};
 
-	$scope.limpaSelecoes = function(){
-		$scope.motoristas.forEach(function(motorista){
-			motorista.selecionado = 'none';
-		});
-	};	
+$scope.alternaStatusDasEntidades = function(){
+	$scope.statusDasEntidades === 'ATIVO' ? $scope.statusDasEntidades = 'INATIVO' : $scope.statusDasEntidades = 'ATIVO';
+	$scope.selecionado = true;
+	$scope.motoristaSelecionadoInativo = true;
+	$scope.limpaSelecoes();
+}
 
-	$scope.atualizarSelects = function(){
-		setTimeout(function (){
-			$('select').material_select();
-		}, 500);
-	};
+$scope.limpaSelecoes = function(){
+	$scope.motoristas.forEach(function(motorista){
+		motorista.selecionado = 'none';
+	});
+};	
 
-	$scope.carregarMotoristas();
-	iniciarJquery();
+$scope.atualizarSelects = function(){
+	setTimeout(function (){
+		$('select').material_select();
+	}, 500);
+};
+
+$scope.carregarMotoristas();
+iniciarJquery();
 
 });

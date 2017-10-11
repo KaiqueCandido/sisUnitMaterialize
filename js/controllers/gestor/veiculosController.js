@@ -35,6 +35,7 @@ app.controller('veiculosController', function ($scope, $rootScope, $state, veicu
 
 	$scope.carregarEstados = function () {
 		estadoService.listar().then(function sucess(response) {			
+			$rootScope.pageLoading = false;
 			if(response.data.length > 0) {					
 				$scope.estados = response.data;					
 			} else {				

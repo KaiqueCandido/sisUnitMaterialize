@@ -34,10 +34,10 @@
                         </tr>
                     </thead>        
                     <tbody>
-                        <tr ng-click="selecionaMotorista(motorista)" ng-repeat="motorista in motoristas| filter:{nome:criterioDeBusca}" ng-hide="motorista === null">
+                        <tr ng-click="selecionaMotorista(motorista)" ng-repeat="motorista in motoristas | filter:{nome:criterioDeBusca} | filter:{conta: {statusDoCadastro:statusDasEntidades}}:true | orderBy:'nome'">
                             <td ng-style="{'background-color': motorista.selecionado}">{{motorista.nome + ' ' + motorista.sobrenome}}</td>
-                            <td ng-style="{'background-color': motorista.selecionado}">{{motorista.cnh}}</td>
-                            <td ng-style="{'background-color': motorista.selecionado}">{{motorista.contas[0].statusDoCadastro}}</td>
+                            <td ng-style="{'background-color': motorista.selecionado}">{{motorista.codCnh}}</td>
+                            <td ng-style="{'background-color': motorista.selecionado}">{{motorista.conta.statusDoCadastro}}</td>
                         </tr>          
                     </tbody>
                 </table>            
@@ -120,7 +120,7 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="cnh" type="text" class="validate" ng-model="motorista.cnh" required></input>
+                            <input id="cnh" type="text" class="validate" ng-model="motorista.codCnh" required></input>
                             <label for="cnh">Número CNH</label>
                         </div>
                     </div>   
@@ -189,17 +189,17 @@
 
                     <div id="dadosconta">
                         <div class="input-field col s6">
-                            <input id="login" type="text" class="validate" ng-model="contaMotorista.login" required></input>
+                            <input id="login" type="text" class="validate" ng-model="motorista.conta.login" required></input>
                             <label for="login">Login</label>
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="senha" type="password" class="validate" ng-model="contaMotorista.senha" required></input>
+                            <input id="senha" type="password" class="validate" ng-model="motorista.conta.senha" required></input>
                             <label for="senha">Senha</label>
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="confirmarSenha" type="password" class="validate" ng-model="contaMotorista.confirmarSenha" required></input>
+                            <input id="confirmarSenha" type="password" class="validate" ng-model="motorista.conta.confirmarSenha" required></input>
                             <label for="confirmarSenha">Confirmar Senha</label>
                         </div>                        
                     </div>
@@ -356,7 +356,7 @@
 
 <!-- EDITAR DE MOTORISTA -->
 <div id="modalEditarMotorista" class="modal modal-fixed-footer modal-veiculo">
-    <form ng-submit="editarMotorista()">
+    <form ng-submit="confirmarAtualizacaoDeMotorista()">
         <div class="modal-content">
             <nav class="center">
                 <h5 class="brand-logo center">Editar Motorista</h5>
@@ -428,7 +428,7 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="cnh" type="text" class="validate" ng-model="motoristaSelecionado.cnh" required></input>
+                            <input id="cnh" type="text" class="validate" ng-model="motoristaSelecionado.codCnh" required></input>
                             <label for="cnh">Número CNH</label>
                         </div>
                     </div>   
@@ -497,26 +497,57 @@
 
                     <div id="editardadosconta">
                         <div class="input-field col s6">
-                            <input id="login" type="text" class="validate" ng-model="motoristaSelecionado.contas[0].login" required></input>
+                            <input id="login" type="text" class="validate" ng-model="motoristaSelecionado.conta.login" required></input>
                             <label for="login">Login</label>
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="senha" type="password" class="validate" ng-model="motoristaSelecionado.contas[0].senha" required></input>
+                            <input id="senha" type="password" class="validate" ng-model="motoristaSelecionado.conta.senha" required></input>
                             <label for="senha">Senha</label>
-                        </div>
-
-                        <div class="input-field col s6">
-                            <input id="confirmarSenha" type="password" class="validate" ng-model="motoristaSelecionado.contas[0].confirmarSenha" required></input>
-                            <label for="confirmarSenha">Confirmar Senha</label>
-                        </div>                        
+                        </div>                                                
                     </div>
                 </div>            
             </div>       
         </div>
         <div class="modal-footer">
-            <button class="waves-effect waves-green btn-flat" type="submit">Salvar</button>      
+            <button class="waves-effect waves-green btn-flat" type="submit">Atualizar</button>      
             <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
         </div>
     </form>    
+</div>
+
+<!-- CONFIRMAÇÂO DE EDIÇÂO DE MOTORISTA -->
+<div id="modalConfirmacaoEdicaoDeMotorista" class="modal bottom-sheet">
+  <div class="modal-content modal-confirmacao">
+    <h5>Confirmar operação</h5>
+    <p>Deseja realmente editar esse motorista?</p>
+  </div>
+  <div class="modal-footer">
+    <button ng-click="editarMotorista()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+    <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+  </div>
+</div>
+
+<!-- CONFIRMAÇÂO DE EXCLUSÃO DE MOTORISTA -->
+<div id="modalConfirmacaoExclusaoDeMotorista" class="modal bottom-sheet">
+  <div class="modal-content modal-confirmacao">
+    <h5>Confirmar operação</h5>
+    <p>Deseja realmente excluir esse motorista, caso exclua o mesmo será inativado!</p>
+  </div>
+  <div class="modal-footer">
+    <button ng-click="inativarMotorista()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+    <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+  </div>
+</div>
+
+<!-- CONFIRMAÇÂO DE EXCLUSÃO DE MOTORISTA -->
+<div id="modalConfirmacaoAtivacaoDeMotorista" class="modal bottom-sheet">
+  <div class="modal-content modal-confirmacao">
+    <h5>Confirmar operação</h5>
+    <p>Deseja realmente ativar esse motorista?</p>
+  </div>
+  <div class="modal-footer">
+    <button ng-click="ativarMotorista()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+    <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+  </div>
 </div>
