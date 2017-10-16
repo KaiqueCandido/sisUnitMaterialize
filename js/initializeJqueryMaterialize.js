@@ -23,6 +23,7 @@ function iniciarJquery(){
 		selectYears: 100,
 		closeOnSelect: true
 	});
+	$('.timepicker').pickatime();
 	setTimeout(function (){
 		$('select').material_select();
 	}, 500);

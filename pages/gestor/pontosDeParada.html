@@ -24,7 +24,7 @@
 						<input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="Qual o ponto de parada que você está buscando?"></input>
 					</div>                
 				</div>         
-
+				
 				<table class="highlight responsive-table">
 					<thead>
 						<tr>                                        
@@ -33,7 +33,8 @@
 							<th>Longitude</th>                            
 							<th><a href="" ng-click="alternaStatusDasEntidades()">Status</a></th> 
 						</tr>
-					</thead>        
+					</thead>   
+					
 					<tbody>
 						<tr ng-click="selecionaPontoDeParada(pontoDeParada)" ng-repeat="pontoDeParada in pontosDeParada | filter:{descricao:criterioDeBusca} | filter:{statusDoCadastro:statusDasEntidades}:true | orderBy:'descricao'">
 							<td ng-style="{'background-color': pontoDeParada.selecionado}">{{pontoDeParada.descricao}}</td>
@@ -50,7 +51,7 @@
 
 <!-- CADASTRO DE PONTO DE PARADA -->
 <div id="modalNovoPontoDeParada" class="modal modal-fixed-footer modal-veiculo">
-	<form ng-submit="salvarPontoDeParada(pontoDeParada)">
+	<form ng-submit="salvarPontoDeParada()">
 		<div class="modal-content">
 			<nav class="center">
 				<h5 class="brand-logo center">Novo Ponto de Parada</h5>
@@ -65,7 +66,7 @@
 		</div>
 		<div class="modal-footer">
 			<button class="waves-effect waves-green btn-flat" type="submit">Salvar</button>      
-			<button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+			<button class="modal-action modal-close waves-effect waves-red btn-flat left" type="reset">Cancelar</button>
 		</div>
 	</form>    
 </div>
@@ -91,7 +92,7 @@
 
 <!-- EDITAR DE PONTO DE PARADA -->
 <div id="modalEditarPontoDeParada" class="modal modal-fixed-footer modal-veiculo">
-	<form ng-submit="editarPontoDeParada()">
+	<form ng-submit="confirmarEdicaoDePontoDeParada()">
 		<div class="modal-content">
 			<nav class="center">
 				<h5 class="brand-logo center">Editar Ponto de Parada</h5>
@@ -106,7 +107,43 @@
 		</div>
 		<div class="modal-footer">
 			<button class="waves-effect waves-green btn-flat" type="submit">Atualizar</button>      
-			<button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+			<button class="modal-action modal-close waves-effect waves-red btn-flat left" type="reset">Cancelar</button>
 		</div>
 	</form>    
+</div>
+
+<!-- CONFIRMAÇÂO DE EDIÇÂO DE PONTO DE PARADA -->
+<div id="modalConfirmacaoEdicaoDePontoDeParada" class="modal bottom-sheet">
+	<div class="modal-content modal-confirmacao">
+		<h5>Confirmar operação</h5>
+		<p>Deseja realmente editar esse ponto de parada?</p>
+	</div>
+	<div class="modal-footer">
+		<button ng-click="editarPontoDeParada()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+		<button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+	</div>
+</div>
+
+<!-- CONFIRMAÇÂO DE EXCLUSÂO DE PONTO DE PARADA -->
+<div id="modalConfirmacaoExclusaoDePontoDeParada" class="modal bottom-sheet">
+	<div class="modal-content modal-confirmacao">
+		<h5>Confirmar operação</h5>
+		<p>Deseja realmente excluir esse ponto de parada, caso exclua o mesmo será inativado!</p>
+	</div>
+	<div class="modal-footer">
+		<button ng-click="excluirPontoDeParada()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+		<button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+	</div>
+</div>
+
+<!-- CONFIRMAÇÂO DE ATIVACAO DE PONTO DE PARADA -->
+<div id="modalConfirmacaoAtivacaoDePontoDeParada" class="modal bottom-sheet">
+	<div class="modal-content modal-confirmacao">
+		<h5>Confirmar operação</h5>
+		<p>Deseja realmente ativar esse ponto de parada?</p>
+	</div>
+	<div class="modal-footer">
+		<button ng-click="ativarPontoDeParada()" class="waves-effect waves-green btn-flat">Confirmar</button>      
+		<button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+	</div>
 </div>

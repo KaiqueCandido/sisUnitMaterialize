@@ -24,7 +24,7 @@
                         <input class="form-control" type="text" ng-model="criterioDeBusca" placeholder="Qual o veiculo que você está buscando?"></input>
                     </div>                
                 </div>         
-
+                
                 <table class="highlight responsive-table">
                     <thead>
                         <tr>                                        
@@ -32,7 +32,8 @@
                             <th>Placa</th>                            
                             <th><a href="" ng-click="alternaStatusDasEntidades()">Status</a></th> 
                         </tr>
-                    </thead>        
+                    </thead> 
+
                     <tbody>
                         <tr ng-click="selecionaVeiculo(veiculo)" ng-repeat="veiculo in veiculos| filter:{descricao:criterioDeBusca} | filter:{statusDoCadastro:statusDasEntidades}:true" ng-hide="veiculo === null">
                             <td ng-style="{'background-color': veiculo.selecionado}">{{veiculo.descricao}}</td>
@@ -41,7 +42,6 @@
                         </tr>          
                     </tbody>
                 </table>
-
             </div>
         </div>
     </div>
@@ -87,7 +87,7 @@
         </div>
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="submit">Salvar</button>      
-            <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+            <button class="modal-action modal-close waves-effect waves-red btn-flat left" type="reset">Cancelar</button>
         </div>
     </form>
 </div>
