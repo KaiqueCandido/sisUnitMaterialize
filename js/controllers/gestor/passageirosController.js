@@ -48,10 +48,10 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 
 	$scope.carregarSexosEnums = function () {
 		enumService.sexos().then(function sucess(response) {
-			$rootScope.pageLoading = false;
-			if(response.data.length > 0) {
+			$rootScope.pageLoading = false;			
+			if(response.data.length > 0) {				
 				$scope.sexos = response.data;			
-			} else {
+			} else {				
 				Materialize.toast('Não foi encontrado os sexos', 5000, 'rounded toasts-warning');
 			}
 		}, function error() {
@@ -70,7 +70,7 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 			if(response.data.length > 0) {
 				$scope.estados = response.data;			
 			} else {
-				Materialize.toast('Não foi encontrado os sexos', 5000, 'rounded toasts-warning');
+				Materialize.toast('Não foi encontrado os estados', 5000, 'rounded toasts-warning');
 			}
 		}, function error() {
 			$rootScope.pageLoading = false;
