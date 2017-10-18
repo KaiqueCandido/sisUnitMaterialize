@@ -4,5 +4,6 @@ var app = angular.module("app", [
 	"uiPlacaDirective",
 	"uiCepDirective",
 	"uiCpfDirective",
-	"uiTelefoneDirective"
+	"uiTelefoneDirective",
+	"uiHoraDirective"
 	]);

@@ -23,13 +23,6 @@ function iniciarJquery(){
 		selectYears: 100,
 		closeOnSelect: true
 	});
-	
-	$('#timepicker').pickatime({
-		autoclose: false,
-		twelvehour: false,
-		default: '14:20:00'
-	});
-
 
 	setTimeout(function (){
 		$('select').material_select();
