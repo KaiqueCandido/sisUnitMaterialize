@@ -1,5 +1,5 @@
 var app = angular.module('app');
-app.controller('motoristasController', function ($scope, $rootScope, $state, enumService, motoristaService, estadoService, cidadeService, cepService) {
+app.controller('motoristasController', function ($scope, $rootScope, $state, enumService, motoristaService, estadoService, cidadeService, cepService, validatorService) {
 	$scope.selecionado = true;
 	$scope.motoristaSelecionadoInativo = true;
 	$scope.motoristaSelecionado = {};
@@ -156,6 +156,39 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 		});
 	};
 
+	$scope.validateCadastroRg = function (value) {	
+		validatorService.validateRg(value).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motorista.documentosPessoais.rg = '';
+				Materialize.toast('Esse RG já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});
+	};
+
+	$scope.validateEdicaoRg = function (value) {	
+		console.log($scope.motoristaSelecionado.documentosPessoais.rg);
+		console.log(value);
+		if ($scope.motoristaSelecionado.documentosPessoais.rg != value){
+			console.log("Entrou");
+			validatorService.validateRg(value).then(function sucess(response) {
+				$rootScope.pageLoading = false;
+			}, function error(response) {
+				$rootScope.pageLoading = false;
+				if (response.status === 406) {
+					$scope.motoristaSelecionado.documentosPessoais.rg = value;
+					Materialize.toast('O RG informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+				} else {
+					Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+				}
+			});		
+		}		
+	};
+
 	$scope.pesquisaEstadoECidade = function (cep) {
 		cepService.buscarEstadoECidade(cep).then(function sucess(response) {			
 			if(typeof response.data.erro === 'undefined') {				
@@ -228,5 +261,4 @@ $scope.atualizarSelects = function(){
 
 $scope.carregarMotoristas();
 iniciarJquery();
-
 });

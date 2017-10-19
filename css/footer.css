@@ -9,7 +9,10 @@ header, main, footer {
 }
 
 footer {
-	background-color: #2086a3 !important;
+	background-color: #004d40 !important;
+	position: absolute; 
+    bottom: 0px; 
+    width: 100%; 
 }
 
 .main {

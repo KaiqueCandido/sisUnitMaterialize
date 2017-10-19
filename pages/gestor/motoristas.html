@@ -92,7 +92,7 @@
 
                     <div id="documentos">
                         <div class="input-field col s6">
-                            <input id="rg" type="text" class="validate" ng-model="motorista.documentosPessoais.rg" required maxlength="30"></input>
+                            <input id="rg" type="text" class="validate" ng-model="motorista.documentosPessoais.rg" ng-blur="validateCadastroRg(motorista.documentosPessoais.rg)" required maxlength="30"></input>
                             <label for="rg">RG</label>                            
                         </div>
 
@@ -400,7 +400,7 @@
 
                     <div id="editardocumentos">
                         <div class="input-field col s6">
-                            <input id="rg" type="text" class="validate" ng-model="motoristaSelecionado.documentosPessoais.rg" required maxlength="30"></input>
+                            <input id="rg" type="text" class="validate" ng-model="motoristaSelecionado.documentosPessoais.rg" ng-blur="validateEdicaoRg(motoristaSelecionado.documentosPessoais.rg)" required maxlength="30"></input>
                             <label for="rg">RG</label>                            
                         </div>
 
@@ -511,7 +511,7 @@
         </div>
         <div class="modal-footer">
             <button class="waves-effect waves-green btn-flat" type="submit">Atualizar</button>      
-            <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
+            <button class="modal-action modal-close waves-effect waves-red btn-flat left" type="reset">Cancelar</button>
         </div>
     </form>    
 </div>

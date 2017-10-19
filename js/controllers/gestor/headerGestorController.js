@@ -25,6 +25,10 @@ app.controller('headerGestorController', function($scope, $state){
 		$state.go('gestorGerenciarRotas');					
 	};
 
+	$scope.sair = function () {			
+		$state.go('login');					
+	};
+
 	iniciarJquery();
 
 })

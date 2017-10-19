@@ -1,8 +1,10 @@
 .login {
-  background-color: #2a2b2a;
+  background-color: #004d40 ;
   background-attachment: fixed;
   background-position: center;
   background-size: cover;
+  float: right !important;
+  min-width: 100%;
 }
 
 .login-container{
@@ -12,7 +14,7 @@
 }
 
 .login-input-container{
-  padding-top: 40px !important;
+  padding-top: 80px !important;
   padding-right: 15px;
   padding-left: 15px;
   padding-bottom: 20px;
@@ -37,17 +39,17 @@
   width: 100%;
   border-radius: 15px !important;
   margin-bottom: 20px;
-  background-color: #016773 !important;
+  background-color: #00695c   !important;
 }
 
 .btn-cor-default{
-  background-color: #016773 !important;
+  background-color: #00695c   !important;
 }
 
 .ionImageLogo{
-  width: 100px;
+  width: 200px;
   position: relative;
-  top: 70px;
+  top: 110px;
 }
 
 .seperator-dashed{
