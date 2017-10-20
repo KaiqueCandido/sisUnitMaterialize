@@ -12,6 +12,7 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 	$scope.motorista.endereco.estado = {};
 	$scope.motorista.endereco.cidade = {};
 	$scope.motorista.contas = [] ;
+	$scope.objectValidateVo = {};
 	
 	$scope.contaMotorista = {};
 
@@ -156,8 +157,10 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 		});
 	};
 
-	$scope.validateCadastroRg = function (value) {	
-		validatorService.validateRg(value).then(function sucess(response) {
+	$scope.validateCadastroRg = function (value) {			
+		$scope.objectValidateVo.id = 0;
+		$scope.objectValidateVo.value = value;
+		validatorService.validateRg($scope.objectValidateVo).then(function sucess(response) {
 			$rootScope.pageLoading = false;
 		}, function error(response) {
 			$rootScope.pageLoading = false;
@@ -170,23 +173,116 @@ app.controller('motoristasController', function ($scope, $rootScope, $state, enu
 		});
 	};
 
-	$scope.validateEdicaoRg = function (value) {	
-		console.log($scope.motoristaSelecionado.documentosPessoais.rg);
-		console.log(value);
-		if ($scope.motoristaSelecionado.documentosPessoais.rg != value){
-			console.log("Entrou");
-			validatorService.validateRg(value).then(function sucess(response) {
-				$rootScope.pageLoading = false;
-			}, function error(response) {
-				$rootScope.pageLoading = false;
-				if (response.status === 406) {
-					$scope.motoristaSelecionado.documentosPessoais.rg = value;
-					Materialize.toast('O RG informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
-				} else {
-					Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
-				}
-			});		
-		}		
+	$scope.validateEdicaoRg = function (value) {		
+		$scope.objectValidateVo.id = $scope.motoristaSelecionado.id;
+		$scope.objectValidateVo.value = value;			
+		validatorService.validateRg($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motoristaSelecionado.documentosPessoais.rg = '';
+				Materialize.toast('O RG informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});		
+	};
+
+	$scope.validateCadastroCpf = function (value) {			
+		$scope.objectValidateVo.id = 0;
+		$scope.objectValidateVo.value = value;
+		validatorService.validateCpf($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motorista.documentosPessoais.cpf = '';
+				Materialize.toast('Esse CPF já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});
+	};
+
+	$scope.validateEdicaoCpf = function (value) {		
+		$scope.objectValidateVo.id = $scope.motoristaSelecionado.id;
+		$scope.objectValidateVo.value = value;			
+		validatorService.validateCpf($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motoristaSelecionado.documentosPessoais.Cpf = '';
+				Materialize.toast('O CPF informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});		
+	};
+
+	$scope.validateCadastroEmail = function (value) {			
+		$scope.objectValidateVo.id = 0;
+		$scope.objectValidateVo.value = value;
+		validatorService.validateEmail($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motorista.contato.email = '';
+				Materialize.toast('Esse Email já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});
+	};
+
+	$scope.validateEdicaoEmail = function (value) {		
+		$scope.objectValidateVo.id = $scope.motoristaSelecionado.id;
+		$scope.objectValidateVo.value = value;			
+		validatorService.validateEmail($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motoristaSelecionado.contato.email = '';
+				Materialize.toast('O Email informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});		
+	};
+
+	$scope.validateCadastroLogin = function (value) {			
+		$scope.objectValidateVo.id = 0;
+		$scope.objectValidateVo.value = value;
+		validatorService.validateLogin($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motoristaSelecionado.conta.login = '';
+				Materialize.toast('Esse Login já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});
+	};
+
+	$scope.validateEdicaoLogin = function (value) {		
+		$scope.objectValidateVo.id = $scope.motoristaSelecionado.id;
+		$scope.objectValidateVo.value = value;			
+		validatorService.validateLogin($scope.objectValidateVo).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+		}, function error(response) {
+			$rootScope.pageLoading = false;
+			if (response.status === 406) {
+				$scope.motoristaSelecionado.conta.login = '';
+				Materialize.toast('O Login informado já consta em nossa base de dados', 5000, 'rounded toasts-warning');
+			} else {
+				Materialize.toast('Não foi possivel se comunicar com o servidor', 5000, 'rounded toasts-error');				
+			}
+		});		
 	};
 
 	$scope.pesquisaEstadoECidade = function (cep) {

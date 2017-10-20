@@ -62,6 +62,7 @@
                             <li class="tab"><a href="#endereco">Endereço</a></li>
                             <li class="tab"><a href="#contato">Contato</a></li>                            
                             <li class="tab"><a href="#dadosconta">Dados da Conta</a></li>    
+                            <li class="tab"><a href="#rota">Rota</a></li>    
                         </ul>
                     </div>
                     
@@ -203,6 +204,19 @@
                             <label for="confirmarSenha">Confirmar Senha</label>
                         </div>                        
                     </div>
+
+                    <div id="rota">
+                        <div class="input-field col s12">
+                            <select id="rotasParaExibicao" class="validate" required>
+                                <option value="" disabled="" selected="">Selecione Uma Opção</option>
+                                <option ng-repeat="rota in rotas | filter:{statusDoCadastro:'ATIVO'}:true | orderBy:'descricao'" value="{{rota}}">{{rota.descricao}}</option>
+                            </select>
+                            <label for="rotasParaExibicao">Rota</label>                                        
+                        </div>
+                        <div class="input-field col s12">
+                            <div class="map" id="mapExibicaoRota"></div>
+                        </div>
+                    </div>                    
                 </div>            
             </div>       
         </div>
@@ -521,11 +535,11 @@
   <div class="modal-content modal-confirmacao">
     <h5>Confirmar operação</h5>
     <p>Deseja realmente editar esse passageiro?</p>
-  </div>
-  <div class="modal-footer">
+</div>
+<div class="modal-footer">
     <button ng-click="editarPassageiro()" class="waves-effect waves-green btn-flat">Confirmar</button>      
     <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
-  </div>
+</div>
 </div>
 
 <!-- CONFIRMAÇÂO DE EXCLUSÃO DE MOTORISTA -->
@@ -533,11 +547,11 @@
   <div class="modal-content modal-confirmacao">
     <h5>Confirmar operação</h5>
     <p>Deseja realmente excluir esse passageiro, caso exclua o mesmo será inativado!</p>
-  </div>
-  <div class="modal-footer">
+</div>
+<div class="modal-footer">
     <button ng-click="inativarPassageiro()" class="waves-effect waves-green btn-flat">Confirmar</button>      
     <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
-  </div>
+</div>
 </div>
 
 <!-- CONFIRMAÇÂO DE EXCLUSÃO DE MOTORISTA -->
@@ -545,9 +559,9 @@
   <div class="modal-content modal-confirmacao">
     <h5>Confirmar operação</h5>
     <p>Deseja realmente ativar esse passageiro?</p>
-  </div>
-  <div class="modal-footer">
+</div>
+<div class="modal-footer">
     <button ng-click="ativarPassageiro()" class="waves-effect waves-green btn-flat">Confirmar</button>      
     <button class="modal-action modal-close waves-effect waves-red btn-flat left">Cancelar</button>
-  </div>
+</div>
 </div>

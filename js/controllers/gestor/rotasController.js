@@ -176,8 +176,8 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
       desenharRotaAoSelecionarOsPontosDeParadaEditar();
 	};
 
-    	var directionsService = new google.maps.DirectionsService;
-    	var directionsDisplay = new google.maps.DirectionsRenderer;
+	var directionsService = new google.maps.DirectionsService;
+	var directionsDisplay = new google.maps.DirectionsRenderer;
     desenharRotaAoSelecionarOsPontosDeParadaEditar = function() {
     	if ($scope.rotaSelecionada.pontosDeParada.length > 1){
     		directionsDisplay.setMap(mapEditarRota);

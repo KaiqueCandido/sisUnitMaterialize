@@ -115,7 +115,7 @@
                         </div>                    
 
                         <div class="input-field col s6">
-                            <input id="cpf" type="text" class="validate" ng-model="motorista.documentosPessoais.cpf" required ui-cpf></input>
+                            <input id="cpf" type="text" class="validate" ng-model="motorista.documentosPessoais.cpf" ng-blur="validateCadastroCpf(motorista.documentosPessoais.cpf)" required ui-cpf></input>
                             <label for="cpf">CPF</label>                            
                         </div>
 
@@ -182,14 +182,14 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="email" type="email" class="validate" ng-model="motorista.contato.email" required></input>
+                            <input id="email" type="email" class="validate" ng-model="motorista.contato.email" ng-blur="validateCadastroEmail(motorista.contato.email)" required></input>
                             <label for="email">E-mail</label>                            
                         </div>
                     </div>
 
                     <div id="dadosconta">
                         <div class="input-field col s6">
-                            <input id="login" type="text" class="validate" ng-model="motorista.conta.login" required></input>
+                            <input id="login" type="text" class="validate" ng-model="motorista.conta.login" ng-blur="validateCadastroLogin(motorista.conta.login)" required></input>
                             <label for="login">Login</label>
                         </div>
 
@@ -423,7 +423,7 @@
                         </div>                    
 
                         <div class="input-field col s6">
-                            <input id="cpf" type="text" class="validate" ng-model="motoristaSelecionado.documentosPessoais.cpf" required ></input>
+                            <input id="cpf" type="text" class="validate" ng-model="motoristaSelecionado.documentosPessoais.cpf" ng-blur="validateEdicaoCpf(motoristaSelecionado.documentosPessoais.cpf)" required ui-cpf></input>
                             <label for="cpf">CPF</label>                            
                         </div>
 
@@ -490,14 +490,14 @@
                         </div>
 
                         <div class="input-field col s6">
-                            <input id="email" type="email" class="validate" ng-model="motoristaSelecionado.contato.email" required></input>
+                            <input id="email" type="email" class="validate" ng-model="motoristaSelecionado.contato.email" ng-blur="validateEdicaoEmail(motoristaSelecionado.contato.email)" required></input>
                             <label for="email">E-mail</label>                            
                         </div>
                     </div>
 
                     <div id="editardadosconta">
                         <div class="input-field col s6">
-                            <input id="login" type="text" class="validate" ng-model="motoristaSelecionado.conta.login" required></input>
+                            <input id="login" type="text" class="validate" ng-model="motoristaSelecionado.conta.login" ng-blur="validateEdicaoLogin(motoristaSelecionado.conta.login)" required></input>
                             <label for="login">Login</label>
                         </div>
 
