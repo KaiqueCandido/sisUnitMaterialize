@@ -1,5 +1,5 @@
 var app = angular.module('app');
-app.controller('passageirosController', function ($scope, $rootScope, $state, enumService, passageiroService, estadoService, cidadeService, cepService) {
+app.controller('passageirosController', function ($scope, $rootScope, $state, enumService, passageiroService, estadoService, cidadeService, cepService, rotaService) {
 	$scope.selecionado = true;
 	$scope.passageiroSelecionadoInativo = true;
 	$scope.passageiroSelecionado = {};
@@ -12,6 +12,7 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 	$scope.passageiro.endereco.estado = {};
 	$scope.passageiro.endereco.cidade = {};
 	$scope.passageiro.contas = [] ;
+	$scope.rotas = [] ;
 	
 	$scope.contaPassageiro = {};
 
@@ -41,7 +42,8 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 	$scope.prepararDados = function () {
 		$scope.carregarSexosEnums();
 		$scope.carregarEstados();
-		$scope.carregarTiposDeZonaEnums();		
+		$scope.carregarTiposDeZonaEnums();
+		$scope.carregarRotas();		
 		$scope.atualizarSelects();
 		Materialize.updateTextFields();
 	};
@@ -98,6 +100,61 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 
 	$('#tipoDeZona').change(function(){
 		$scope.passageiro.endereco.tipoDeZona = $(this).val();
+	});
+
+	$scope.carregarRotas = function () {
+		rotaService.listar().then(function sucess (response) {
+			$rootScope.pageLoading = false;
+			if(response.data.length > 0) {
+				$scope.rotas = response.data;			
+			} else {
+				Materialize.toast('Não foi encontrado as rotas', 5000, 'rounded toasts-warning');
+			}
+		}, function function_name (argument) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel carregar as rotas', 5000, 'rounded toasts-error');						
+		});
+	};
+		
+	$('#rotasParaExibicao').change(function(){		
+		var rotaSelecionada = angular.fromJson($(this).val());
+		setTimeout(function (){
+			setTimeout(function (){
+				var myLatlng = new google.maps.LatLng(rotaSelecionada.pontosDeParada[0].latitude, rotaSelecionada.pontosDeParada[0].longitude);
+				var mapOptions = {
+					center: myLatlng,
+					zoom: 13
+				};
+
+				var mapExibicaoRota = new google.maps.Map(document.getElementById("mapExibicaoRota"), mapOptions);
+
+				var directionsDisplay = new google.maps.DirectionsRenderer;
+				var directionsService = new google.maps.DirectionsService;
+				directionsDisplay.setMap(mapExibicaoRota);
+
+				var origemRota = new google.maps.LatLng(rotaSelecionada.pontosDeParada[0].latitude, rotaSelecionada.pontosDeParada[0].longitude);
+				var fimRota = new google.maps.LatLng(rotaSelecionada.pontosDeParada[rotaSelecionada.pontosDeParada.length-1].latitude, rotaSelecionada.pontosDeParada[rotaSelecionada.pontosDeParada.length-1].longitude);
+
+				$scope.pontosParaDesenharARota = [];
+				rotaSelecionada.pontosDeParada.forEach(function(currentValue) {
+					$scope.pontosParaDesenharARota.push({location: new google.maps.LatLng(currentValue.latitude,currentValue.longitude), stopover: true});
+				});
+
+				directionsService.route({
+					origin: origemRota,
+					destination: fimRota,
+					travelMode: google.maps.TravelMode.DRIVING,
+					waypoints: $scope.pontosParaDesenharARota,
+					optimizeWaypoints: true
+				}, function(response, status) {
+					if (status == 'OK') {
+						directionsDisplay.setDirections(response);
+					} else {
+						window.alert('Directions request failed due to ' + status);
+					}
+				});		
+			}, 500);
+		}, 500);
 	});		
 
 	$scope.salvarPassageiro = function () {		

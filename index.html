@@ -39,7 +39,7 @@
 	<script src="js/controllers/gestor/pontosDeParadaController.js" type="text/javascript"></script>
 	<script src="js/controllers/gestor/rotasController.js" type="text/javascript"></script>	
 	<script src="js/controllers/gestor/veiculosController.js" type="text/javascript"></script>	
-		
+	
 	<!--Controllers Desenvolvedor-->
 	<script src="js/controllers/desenvolvedor/loginDesenvolvedorController.js" type="text/javascript"></script>
 	<script src="js/controllers/desenvolvedor/headerDesenvolvedorController.js" type="text/javascript"></script>
@@ -58,6 +58,7 @@
 	<script src="js/service/passageiroService.js" type="text/javascript"></script>	
 	<script src="js/service/pontoDeParadaService.js" type="text/javascript"></script>	
 	<script src="js/service/rotaService.js" type="text/javascript"></script>	
+	<script src="js/service/validatorService.js" type="text/javascript"></script>	
 
 	<!--Diretivas-->
 	<script src="js/directives/uiDateDirective.js" type="text/javascript"></script>	
@@ -90,12 +91,12 @@
 	<!--Arquivo de inicialização Jquery-->
 	<script src="js/initializeJqueryMaterialize.js" type="text/javascript"></script>
 	<!--Importação da api do Maps Google!-->
-    <script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDkGeDUcB0P4GCMFBPyEMSbN5j7YyYdW-k"></script>
+	<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDkGeDUcB0P4GCMFBPyEMSbN5j7YyYdW-k"></script>
 	
 </head>
 <body ng-app="app">	
 	<div class="header" ui-view="header"></div>
-	<div class="main" ui-view="content"></div>
+	<div class="" ui-view="content"></div>
 	<div class="footer" ui-view="footer"></div>
 	<div ng-show="pageLoading" ng-include="'pages/loading.html'"></div>
 </body>

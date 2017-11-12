@@ -125,7 +125,11 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 					});
 
 					marker.setAttribution({source:pontoDeParada.id.toString()});
-					marker.setIcon("resourcers/ponto_selecionado.png");
+					$scope.rotaSelecionada.pontosDeParada.forEach(function (currentValue) {
+						if (pontoDeParada.id === currentValue.id){
+							marker.setIcon("resourcers/ponto_selecionado.png");							
+						};
+					});
 
 					marker.addListener('click', function(event){
 						if(typeof marker.getIcon() === 'undefined' || marker.getIcon() === null) {
@@ -147,32 +151,7 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 
 				});
 
-				var directionsDisplay = new google.maps.DirectionsRenderer;
-				var directionsService = new google.maps.DirectionsService;
-
-				directionsDisplay.setMap(mapEditarRota);
-				directionsDisplay.setOptions( { suppressMarkers: true } );
-
-				var origemRota = new google.maps.LatLng($scope.rotaSelecionada.pontosDeParada[0].latitude, $scope.rotaSelecionada.pontosDeParada[0].longitude);
-				var fimRota = new google.maps.LatLng($scope.rotaSelecionada.pontosDeParada[$scope.rotaSelecionada.pontosDeParada.length-1].latitude, $scope.rotaSelecionada.pontosDeParada[$scope.rotaSelecionada.pontosDeParada.length-1].longitude);
-				
-				$scope.rotaSelecionada.pontosDeParada.forEach(function(currentValue) {
-					$scope.pontosParaDesenharARotaEditar.push({location: new google.maps.LatLng(currentValue.latitude,currentValue.longitude), stopover: true});
-				});
-
-				directionsService.route({
-					origin: origemRota,
-					destination: fimRota,
-					travelMode: google.maps.TravelMode.DRIVING,
-					waypoints: $scope.pontosParaDesenharARotaEditar,
-					optimizeWaypoints: true
-				}, function(response, status) {
-					if (status == 'OK') {
-						directionsDisplay.setDirections(response);
-					} else {
-						window.alert('Directions request failed due to ' + status);
-					}
-				});
+				desenharRotaAoSelecionarOsPontosDeParadaEditar();
 			}, 500);
 		} else {
 			Materialize.toast('Essa rota não possui pontos de parada para carregar o mapa!', 5000, 'rounded toasts-warning');
@@ -182,48 +161,52 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 	addPontoSelecionadoEditar = function(id){
       $scope.pontosDeParada.forEach(function(currentValue){
         if (currentValue.id === parseInt(id)){
-          $scope.pontosDeParadaSelecionadosEditar.push(currentValue);
+          $scope.rotaSelecionada.pontosDeParada.push(currentValue);
           desenharRotaAoSelecionarOsPontosDeParadaEditar();
         }
       });
+      console.log($scope.rotaSelecionada.pontosDeParada);
 	};		
 
 	removePontoSelecionadoEditar = function(id) {
-      $scope.pontosDeParadaSelecionadosEditar = $scope.pontosDeParadaSelecionadosEditar.filter(function (pontoDeParada) {
+      $scope.rotaSelecionada.pontosDeParada = $scope.rotaSelecionada.pontosDeParada.filter(function (pontoDeParada) {
         if (pontoDeParada.id != parseInt(id)) return pontoDeParada;
       });
+      console.log($scope.rotaSelecionada.pontosDeParada);
       desenharRotaAoSelecionarOsPontosDeParadaEditar();
-	}
+	};
 
+	var directionsService = new google.maps.DirectionsService;
+	var directionsDisplay = new google.maps.DirectionsRenderer;
     desenharRotaAoSelecionarOsPontosDeParadaEditar = function() {
-      if ($scope.pontosDeParadaSelecionadosEditar.length > 1){
-        directionsDisplay.setMap(mapEditarRota);
-        directionsDisplay.setOptions( { suppressMarkers: true } );
-        var origemRota = new google.maps.LatLng($scope.pontosDeParadaSelecionadosEditar[0].latitude, $scope.pontosDeParadaSelecionadosEditar[0].longitude);
-        var fimRota = new google.maps.LatLng($scope.pontosDeParadaSelecionadosEditar[$scope.pontosDeParadaSelecionadosEditar.length-1].latitude, $scope.pontosDeParadaSelecionadosEditar[$scope.pontosDeParadaSelecionadosEditar.length-1].longitude);
+    	if ($scope.rotaSelecionada.pontosDeParada.length > 1){
+    		directionsDisplay.setMap(mapEditarRota);
+    		directionsDisplay.setOptions( { suppressMarkers: true } );
+    		var origemRota = new google.maps.LatLng($scope.rotaSelecionada.pontosDeParada[0].latitude, $scope.rotaSelecionada.pontosDeParada[0].longitude);
+    		var fimRota = new google.maps.LatLng($scope.rotaSelecionada.pontosDeParada[$scope.rotaSelecionada.pontosDeParada.length-1].latitude, $scope.rotaSelecionada.pontosDeParada[$scope.rotaSelecionada.pontosDeParada.length-1].longitude);
 
-        $scope.pontosParaDesenharARotaEditar = [];
-        $scope.pontosDeParadaSelecionadosEditar.forEach(function(currentValue) {
-          $scope.pontosParaDesenharARotaEditar.push({location: new google.maps.LatLng(currentValue.latitude,currentValue.longitude), stopover: true});
-        });
+    		$scope.pontosParaDesenharARotaEditar = [];
+    		$scope.rotaSelecionada.pontosDeParada.forEach(function(currentValue) {
+    			$scope.pontosParaDesenharARotaEditar.push({location: new google.maps.LatLng(currentValue.latitude,currentValue.longitude), stopover: true});
+    		});
 
-        directionsService.route({
-          origin: origemRota,
-          destination: fimRota,
-          travelMode: google.maps.TravelMode.DRIVING,
-          waypoints: $scope.pontosParaDesenharARotaEditar,
-          optimizeWaypoints: true
-        }, function(response, status) {
-          if (status == 'OK') {
-            directionsDisplay.setDirections(response);
-          } else {
-            window.alert('Directions request failed due to ' + status);
-          }
-        });
-      } else if ($scope.pontosDeParadaSelecionadosEditar.length < 1){
-        directionsDisplay.setMap(null);
-      }
-	}
+    		directionsService.route({
+    			origin: origemRota,
+    			destination: fimRota,
+    			travelMode: google.maps.TravelMode.DRIVING,
+    			waypoints: $scope.pontosParaDesenharARotaEditar,
+    			optimizeWaypoints: true
+    		}, function(response, status) {
+    			if (status == 'OK') {
+    				directionsDisplay.setDirections(response);
+    			} else {
+    				window.alert('Directions request failed due to ' + status);
+    			}
+    		});
+    	} else if ($scope.rotaSelecionada.pontosDeParada.length < 1){
+    		directionsDisplay.setMap(null);
+    	}
+	};
 
 	$scope.inicializarMapaNovaRota = function () {
 		navigator.geolocation.getCurrentPosition( function (position) {
@@ -334,6 +317,15 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 	$('#motoristas').change(function () {
 		$scope.rota.motorista = angular.fromJson($(this).val());
 	});
+	
+	$('#motoristasEdicao').change(function () {
+		var auxInt = parseInt($(this).val());
+		$scope.motoristas.forEach(function (currentValue) {
+			if (currentValue.id === auxInt){
+				$scope.rotaSelecionada.motorista = currentValue;
+			}
+		})
+	});
 
 	$scope.carregarVeiculos = function () {
 		veiculoService.listar().then(function sucess (response) {
@@ -351,6 +343,16 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 
 	$('#veiculos').change(function () {
 		$scope.rota.veiculo = angular.fromJson($(this).val());
+	});
+
+	$('#veiculosEdicao').change(function () {
+		var auxInt = parseInt($(this).val());
+		$scope.veiculos.forEach(function (currentValue) {
+			if (currentValue.id === auxInt){
+				$scope.rotaSelecionada.veiculo = currentValue;
+			}
+		})
+		console.log($scope.rotaSelecionada);
 	});
 
 	$scope.carregarDiasDaSemana = function () {
@@ -371,6 +373,10 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 		$scope.rota.cronograma.diaDaSemana = $(this).val();
 	});
 
+	$('#diaDaSemanaEdicao').change(function () {
+		$scope.rotaSelecionada.cronograma.diaDaSemana = $(this).val();
+	});
+
 	$scope.carregarTurnos = function () {
 		enumService.turnos().then(function sucess (response) {
 			$rootScope.pageLoading = false;
@@ -387,6 +393,10 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 
 	$('#turno').change(function () {
 		$scope.rota.cronograma.turno = $(this).val();
+	});
+
+	$('#turnoEdicao').change(function () {
+		$scope.rotaSelecionada.cronograma.turno = $(this).val();
 	});
 
 	$scope.carregarPontosDeParada = function () {
@@ -418,6 +428,56 @@ app.controller('rotasController', function ($scope, $rootScope, $state, rotaServ
 		} else {
 			Materialize.toast('Selecione no minimo dois pontos de parada', 5000, 'rounded toasts-warning');						
 		}
+	};
+
+	$scope.confirmarEdicaoDeRota = function () {
+		$('#modalConfirmacaoEdicaoDeRota').modal('open');	
+	};
+
+	$scope.editarRota = function () {
+		if($scope.rotaSelecionada.pontosDeParada.length > 1){
+			rotaService.atualizar($scope.rotaSelecionada).then(function sucess(response) {
+				$rootScope.pageLoading = false;
+				Materialize.toast('Rota atualizada com sucesso', 5000, 'rounded toasts-sucess');
+				$scope.carregarRotas();
+				delete $scope.rotaSelecionada;
+				$('#modalConfirmacaoEdicaoDeRota').modal('close');
+				$('#modalEditarRota').modal('close');
+			}, function error() {
+				$rootScope.pageLoading = false;
+				Materialize.toast('Não foi possivel atualizar a rota, por favor tente novamente!', 5000, 'rounded toasts-error');
+			});			
+		} else {
+			Materialize.toast('É nescessario no minimo dois pontos de parada', 5000, 'rounded toasts-warning');						
+		}
+	};
+
+	$scope.excluirRota = function () {		
+		rotaService.inativar($scope.rotaSelecionada).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('O status da rota foi alterado para INATIVO ', 5000, 'rounded toasts-sucess');
+			$scope.carregarRotas();
+			delete $scope.rotaSelecionada;
+			$('#modalConfirmacaoExclusaoDeRota').modal('close');
+		}, function error() {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel excluir a rota, por favor tente novamente!', 5000, 'rounded toasts-error');
+		});			
+		
+	};
+
+	$scope.ativarRota = function () {		
+		rotaService.ativar($scope.rotaSelecionada).then(function sucess(response) {
+			$rootScope.pageLoading = false;
+			Materialize.toast('O status da rota foi alterado para ATIVO ', 5000, 'rounded toasts-sucess');
+			$scope.carregarRotas();
+			delete $scope.rotaSelecionada;
+			$('#modalConfirmacaoAtivacaoDeRota').modal('close');
+		}, function error() {
+			$rootScope.pageLoading = false;
+			Materialize.toast('Não foi possivel ativar a rota, por favor tente novamente!', 5000, 'rounded toasts-error');
+		});			
+		
 	};
 
 	$scope.selecionaRota = function(rota) {

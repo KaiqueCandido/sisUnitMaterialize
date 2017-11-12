@@ -1,19 +1,25 @@
-html, body {
-	height:80%;
-	padding-bottom: 100 !important;
+html {
+	position: relative;
+    min-height: 100%;	
 }
-main {
+
+body {
+    min-height: 100%;	
+    margin: 0 0 60px !important;
+}
+
+main{
 	margin-top: 10px !important;
 	margin-left: 10px !important;
-	margin-right: 10px !important;	
+	margin-right: 10px !important;
 }
 
 nav {
-	background-color: #4db6ac !important;
+	background-color: #004d40 !important;
 }
 
 a {
-	color: #2086a3 !important;
+	color: #004d40 !important;
 }
 
 .a-white {
@@ -29,11 +35,11 @@ a {
 }
 
 .teal.lighten-2 {
-	background-color: #2086a3 !important;
+	background-color: #004d40 !important;
 }
 
 .card-avisos {
-	background-color: #2086a3  !important;
+	background-color: #004d40  !important;
 }
 
 .selecionado{
@@ -55,4 +61,4 @@ td{
 /*Mantém a tabela vazia no formato certo*/
 table.responsive-table{
 	display: inline-table;
-}zz
+}
