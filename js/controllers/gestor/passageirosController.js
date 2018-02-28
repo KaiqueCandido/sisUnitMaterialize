@@ -1,5 +1,7 @@
 var app = angular.module('app');
 app.controller('passageirosController', function ($scope, $rootScope, $state, enumService, passageiroService, estadoService, cidadeService, cepService, rotaService) {
+	var rotaSelecionada = null;
+
 	$scope.selecionado = true;
 	$scope.passageiroSelecionadoInativo = true;
 	$scope.passageiroSelecionado = {};
@@ -117,7 +119,7 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 	};
 		
 	$('#rotasParaExibicao').change(function(){		
-		var rotaSelecionada = angular.fromJson($(this).val());
+		rotaSelecionada = angular.fromJson($(this).val());
 		setTimeout(function (){
 			setTimeout(function (){
 				var myLatlng = new google.maps.LatLng(rotaSelecionada.pontosDeParada[0].latitude, rotaSelecionada.pontosDeParada[0].longitude);
@@ -163,11 +165,28 @@ app.controller('passageirosController', function ($scope, $rootScope, $state, en
 			Materialize.toast('Passageiro cadastrado com sucesso', 5000, 'rounded toasts-sucess');
 			delete $scope.passageiro;
 			$scope.carregarPassageiros();
+			$scope.associarPassageiroAhRota(response.data.id);
 		}, function error() {
 			$rootScope.pageLoading = false;
 			Materialize.toast('Não foi possivel cadastrar o passageiro', 5000, 'rounded toasts-error');
 		});
 	};
+
+	$scope.associarPassageiroAhRota = function (idPassageiro) {
+		console.log(idPassageiro);
+		console.log(rotaSelecionada.id);
+		if (rotaSelecionada != null) {			
+			rotaService.associarPassageiroAhRota(idPassageiro, rotaSelecionada.id).then(function sucess(response) {
+				$rootScope.pageLoading = false;
+				Materialize.toast('O passageiro foi associado a rota com sucesso', 5000, 'rounded toasts-sucess');
+			}, function error() {
+				$rootScope.pageLoading = false;
+				Materialize.toast('Não foi possivel associar o passageiro a rota', 5000, 'rounded toasts-error');
+			});			
+		} else {			
+			Materialize.toast('Por favor selecione uma rota', 5000, 'rounded toasts-warning');
+		}
+	}
 
 	$scope.confirmarAtualizacaoDePassageiro = function () {	
 		$('#modalConfirmacaoEdicaoDePassageiro').modal('open'); 

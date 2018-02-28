@@ -21,16 +21,16 @@ app.controller('loginController', function($scope, $state, $http, loginService){
   });*/
  };  	
 
- $scope.goToAluno = function () {   
-   $state.go('homeAluno');
+ $scope.loginMotorista = function () {   
+   $state.go('homeMotorista');
  };
+
+ $scope.loginPassageiro = function () {   
+   $state.go('homePassageiro');
+ };   
 
  $scope.goAreRestrita = function () {  	
    $state.go('loginDesenvolvedor');
  };
-
- $scope.goToProfessor = function () {  	
-   $state.go('homeProfessor');
- };  	
 
 });

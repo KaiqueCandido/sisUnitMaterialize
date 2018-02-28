@@ -26,6 +26,11 @@ app.service('rotaService', function($http, $state, $rootScope, configValue) {
 		return $http.get(configValue.baseUrl + '/rota');
 	};
 
+	this.listarPorMotorista = function(idMotorista) {
+		$rootScope.pageLoading = true;
+		return $http.post(configValue.baseUrl + '/rota/motorista/' + idMotorista);
+	};
+
 	this.inativar = function(rota) {
 		$rootScope.pageLoading = true;
 		rota.statusDoCadastro = 'INATIVO';
@@ -37,4 +42,15 @@ app.service('rotaService', function($http, $state, $rootScope, configValue) {
 		rota.statusDoCadastro = 'ATIVO';		
 		return $http.put(configValue.baseUrl + '/rota', rota);
 	};
+
+	this.associarPassageiroAhRota = function(idPassageiro, idRota) {
+		$rootScope.pageLoading = true;		
+		return $http.post(configValue.baseUrl + '/rota/passageiro/' + idPassageiro + /rota/ + idRota);
+	};
+
+	this.getDirections = function (origin, destination, waypoints) {
+		$rootScope.pageLoading = true;				
+		return $http.get(configValue.baseUrl + '/rota/origin/'+origin+'/destination/'+destination+'/waypoints/'+waypoints);		
+	};	
+
 });

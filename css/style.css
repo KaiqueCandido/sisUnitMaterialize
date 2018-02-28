@@ -62,3 +62,12 @@ td{
 table.responsive-table{
 	display: inline-table;
 }
+
+.brand-logo {
+	color: White !important;
+	font-size: 1.8rem !important;
+}
+
+.font-size-card-route {
+	font-size: 1.2rem !important;
+}
